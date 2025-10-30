@@ -1,0 +1,32 @@
+-- Moving Block (Left ↔ Right)
+-- Moves smoothly 10 studs right, then back to center, then 10 studs left, and repeats.
+
+local part = script.Parent
+local tweenService = game:GetService("TweenService")
+
+local startPos = part.Position
+local rightPos = startPos + Vector3.new(10, 0, 0)
+local leftPos = startPos + Vector3.new(-10, 0, 0)
+local tweenInfo = TweenInfo.new(2, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut)
+
+while true do
+	-- Move right
+	local tween1 = tweenService:Create(part, tweenInfo, {Position = rightPos})
+	tween1:Play()
+	tween1.Completed:Wait()
+
+	-- Return to center
+	local tween2 = tweenService:Create(part, tweenInfo, {Position = startPos})
+	tween2:Play()
+	tween2.Completed:Wait()
+
+	-- Move left
+	local tween3 = tweenService:Create(part, tweenInfo, {Position = leftPos})
+	tween3:Play()
+	tween3.Completed:Wait()
+
+	-- Return to center again
+	local tween4 = tweenService:Create(part, tweenInfo, {Position = startPos})
+	tween4:Play()
+	tween4.Completed:Wait()
+end
