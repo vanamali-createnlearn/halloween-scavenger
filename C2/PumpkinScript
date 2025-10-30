@@ -1,0 +1,39 @@
+--Take a pumpkin model from toolbox
+--Make sure its a mesh and avoid models
+--Then add a proximity prompt under that and in the model add this script
+-- PumpkinCollect (Inside the pumpkin part or model)
+-- Handles both Model and Part pumpkins automatically
+
+local prompt
+
+-- Detect if this is a Model or Part
+if script.Parent:IsA("Model") then
+	-- Search for ProximityPrompt anywhere inside model
+	prompt = script.Parent:FindFirstChildWhichIsA("ProximityPrompt", true)
+else
+	-- Parent is a single part with prompt directly under it
+	prompt = script.Parent:FindFirstChildOfClass("ProximityPrompt")
+end
+
+if not prompt then
+	warn("No ProximityPrompt found in " .. script.Parent.Name)
+	return
+end
+
+-- Connect the prompt trigger
+prompt.Triggered:Connect(function(player)
+	if not player or not player:FindFirstChild("leaderstats") then return end
+
+	local stats = player.leaderstats:FindFirstChild("Pumpkins")
+	if not stats then return end
+
+	-- Increase pumpkin count
+	stats.Value += 1
+
+	-- Destroy the pumpkin (entire model or just the part)
+	if script.Parent:IsA("Model") then
+		script.Parent:Destroy()
+	else
+		script.Parent:Destroy()
+	end
+end)
