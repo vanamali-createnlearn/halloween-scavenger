@@ -1,0 +1,19 @@
+-- Transparent Obby Block Script
+
+local part = script.Parent
+local interval = 3 -- seconds between state changes
+
+while true do
+	-- Make block invisible and non-collidable
+	part.Transparency = 0.5
+	part.CanCollide = false
+
+	task.wait(interval)
+
+	-- Make block visible and collidable again
+	part.Transparency = 0
+	part.CanCollide = true
+
+	task.wait(interval)
+end
+
