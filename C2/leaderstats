@@ -1,0 +1,14 @@
+--Insert in serverscriptservice
+
+game.Players.PlayerAdded:Connect(function(player)
+	-- Create leaderstats folder
+	local leaderstats = Instance.new("Folder")
+	leaderstats.Name = "leaderstats"
+	leaderstats.Parent = player
+
+	-- Create "Pumpkins" stat
+	local pumpkins = Instance.new("IntValue")
+	pumpkins.Name = "Pumpkins"
+	pumpkins.Value = 0
+	pumpkins.Parent = leaderstats
+end)
