@@ -1,0 +1,21 @@
+--place this in the part that should provide the trampoline boost jump pad effect
+local pad = script.Parent
+local BOOST_POWER = 80 -- upward thrust power
+local BOOST_TIME = 0.2 -- how long the force lasts (seconds)
+
+pad.Touched:Connect(function(hit)
+	local character = hit.Parent
+	local humanoid = character:FindFirstChild("Humanoid")
+	local hrp = character:FindFirstChild("HumanoidRootPart")
+
+	if humanoid and hrp then
+		-- Create a BodyVelocity for upward thrust
+		local bodyVel = Instance.new("BodyVelocity")
+		bodyVel.Velocity = Vector3.new(0, BOOST_POWER, 0)
+		bodyVel.MaxForce = Vector3.new(0, 100000, 0) -- only affects Y axis
+		bodyVel.Parent = hrp
+
+		-- Remove it after a short time so physics go back to normal
+		game:GetService("Debris"):AddItem(bodyVel, BOOST_TIME)
+	end
+end)
