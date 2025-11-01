@@ -1,0 +1,56 @@
+-- Script under the part that contains a ProximityPrompt
+
+local part = script.Parent
+local prompt = part:FindFirstChildOfClass("ProximityPrompt")
+
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local candyTemplate = ReplicatedStorage:FindFirstChild("Candy") -- make sure you have a mesh/model named "Candy"
+
+prompt.Triggered:Connect(function(player)
+	-- 1️⃣ Add random candies (1–4)
+	local leaderstats = player:FindFirstChild("leaderstats")
+	if not leaderstats then return end
+
+	local candies = leaderstats:FindFirstChild("Candies")
+	if not candies then return end
+
+	local amount = math.random(1, 4)
+	candies.Value += amount
+	print(player.Name .. " received " .. amount .. " candies! Total: " .. candies.Value)
+
+	-- 2️⃣ Candy shower effect
+	if candyTemplate then
+		for i = 1, 5 do
+			local clone = candyTemplate:Clone()
+			clone.Parent = workspace
+
+			-- Get player's head position (fallback to HumanoidRootPart)
+			local character = player.Character
+			if not character then continue end
+			local hrp = character:FindFirstChild("HumanoidRootPart") or character:FindFirstChild("Head")
+			if not hrp then continue end
+
+			-- Spawn candy above player with random offset
+			local offsetX = math.random(-3, 3)
+			local offsetZ = math.random(-3, 3)
+			local startPos = hrp.Position + Vector3.new(offsetX, 8, offsetZ)
+			clone:PivotTo(CFrame.new(startPos))
+
+			-- Enable physics and let it fall
+			local primary = clone:IsA("BasePart") and clone or clone:FindFirstChildWhichIsA("BasePart")
+			if primary then
+				primary.Anchored = false
+				local bodyVelocity = Instance.new("BodyVelocity")
+				bodyVelocity.Velocity = Vector3.new(math.random(-2, 2), -10, math.random(-2, 2))
+				bodyVelocity.P = 100
+				bodyVelocity.MaxForce = Vector3.new(1e4, 1e4, 1e4)
+				bodyVelocity.Parent = primary
+				game.Debris:AddItem(bodyVelocity, 0.2)
+			end
+
+			-- Auto cleanup after a few seconds
+			game.Debris:AddItem(clone, 5)
+			task.wait(0.15) -- small delay between each candy
+		end
+	end
+end)
